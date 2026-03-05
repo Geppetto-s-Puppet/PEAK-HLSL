@@ -12,7 +12,6 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 
-
 namespace PEAK_SSGI
 {
     class CapturePass : ScriptableRenderPass
