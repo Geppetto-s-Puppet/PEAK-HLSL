@@ -144,6 +144,9 @@ static volatile bool g_statusUsingOwn = false;
 static volatile bool g_statusInitDone = false;
 static volatile int  g_statusInitResult = 0; // 0=未実行 1=成功 -1=失敗
 
+// ★ Unity フレーム同期用イベント
+static HANDLE g_updateEvent = nullptr;
+
 // ============================================================
 // ユーティリティ
 // ============================================================
@@ -738,7 +741,13 @@ static DWORD WINAPI Thread(LPVOID)
             }
             else
             {
-                Sleep(1);
+                // ★ 変更前: if (IsWindowVisible...) { Render(); } else { Sleep(1); }
+                // ★ 変更後: Unityフレームのシグナルを待ってからRender
+                DWORD wait = WaitForSingleObject(g_updateEvent, 16); // 最大16ms待機
+                if (wait == WAIT_OBJECT_0 && IsWindowVisible(g_hwnd))
+                {
+                    Render();
+                }
             }
         }
     }
@@ -755,6 +764,7 @@ static DWORD WINAPI Thread(LPVOID)
 EXPORT void NativeOverlay_Start()
 {
     InitializeCriticalSection(&g_cs);
+    g_updateEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr); // ★ 追加
     CreateThread(nullptr, 0, Thread, nullptr, 0, nullptr);
 }
 
@@ -884,5 +894,8 @@ EXPORT void NativeOverlay_UpdateTextures(
     LeaveCriticalSection(&g_cs);
 
     // 新テクスチャが届いたら描画スレッドに通知
-    g_needsRender = true;
+
+    // ★ 変更前: g_needsRender = true;
+    // ★ 変更後:
+    SetEvent(g_updateEvent);  // Unityフレームごとに1回だけRenderをトリガー
 }
