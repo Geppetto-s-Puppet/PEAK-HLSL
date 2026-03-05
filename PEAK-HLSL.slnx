@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/ソリューション項目/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="PEAK-HLSL.csproj" Id="627ddc62-39d9-43dd-a671-b97c77fe440d" />
+</Solution>

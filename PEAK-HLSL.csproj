@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{627DDC62-39D9-43DD-A671-B97C77FE440D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PEAK_HLSL</RootNamespace>
+    <!-- ★ C# 側の出力DLL名 -->
+    <AssemblyName>com.alex.peakhlsl.plugin</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\BepInEx\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\Unity.ScriptableBuildPipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ★ Plugin.cs だけ表示 -->
+    <Compile Include="Plugin.cs" />
+    <!-- AssemblyInfo.cs はビルドに必要だが非表示 -->
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <Visible>false</Visible>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ★ native.cpp はソリューションエクスプローラーに表示（コンパイルはカスタムターゲットで行う） -->
+    <None Include="native.cpp" />
+    <!-- ★ ゴミファイルを非表示 -->
+    <None Include=".gitignore">
+      <Visible>false</Visible>
+    </None>
+    <None Include="README.md">
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <!-- ★ native.cpp → com.alex.peakhlsl.native.dll をビルド -->
+  <Target Name="BuildNativeDll" BeforeTargets="Build">
+    <Exec
+      Command="cmd.exe /c &quot;&quot;$(VsInstallRoot)\Common7\Tools\VsDevCmd.bat&quot; -arch=x64 &amp;&amp; cl.exe /LD /O2 /EHsc /Y- /utf-8 /Fe:&quot;$(MSBuildProjectDirectory)\$(OutputPath)com.alex.peakhlsl.native.dll&quot; &quot;$(MSBuildProjectDirectory)\native.cpp&quot; /link user32.lib&quot;"
+      ContinueOnError="false" />
+  </Target>
+
+</Project>
