@@ -168,22 +168,10 @@ namespace PEAK_SSGI
         [DllImport("com.alex.peakhlsl.native.dll")] static extern void NativeOverlay_Start();
         [DllImport("com.alex.peakhlsl.native.dll")] static extern void NativeOverlay_Show();
         [DllImport("com.alex.peakhlsl.native.dll")] static extern void NativeOverlay_Hide();
-        [DllImport("com.alex.peakhlsl.native.dll")] static extern int NativeOverlay_AcquireUnityDevice(IntPtr sampleResourcePtr);
         [DllImport("com.alex.peakhlsl.native.dll")] static extern int NativeOverlay_GetStatus();
-
-        /// <summary>
-        /// シェーダーモードを変更する (0=非表示, 1=パススルー, 2=深度, 3=法線)
-        /// </summary>
         [DllImport("com.alex.peakhlsl.native.dll")] static extern void NativeOverlay_SetMode(int mode);
-
-        /// <summary>
-        /// カラー/深度/法線テクスチャを更新する。
-        /// unityD3D12Device / unityFence は AcquireUnityDevice で取得済みのため不要。
-        /// </summary>
-        [DllImport("com.alex.peakhlsl.native.dll")]
-        static extern void NativeOverlay_UpdateTextures(
-            IntPtr colorPtr, IntPtr depthPtr, IntPtr normalPtr,
-            int screenW, int screenH);
+        [DllImport("com.alex.peakhlsl.native.dll")] static extern int NativeOverlay_AcquireUnityDevice(IntPtr sampleResourcePtr);
+        [DllImport("com.alex.peakhlsl.native.dll")] static extern void NativeOverlay_UpdateTextures(IntPtr colorPtr, IntPtr depthPtr, IntPtr normalPtr, int screenW, int screenH);
 
         // ──── 定数 ────
         const int VK_SLASH = 0xBF;
