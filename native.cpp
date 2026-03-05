@@ -720,7 +720,6 @@ static DWORD WINAPI Thread(LPVOID)
         return 1;
     }
 
-
     DbgLog("[PEAK_SSGI] InitD3D12 succeeded, entering render loop");
 
     MSG msg;
